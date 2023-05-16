@@ -98,6 +98,26 @@ add_action( 'admin_menu', 'blacklist_ips_menu' );
 
 function blacklist_ips_admin_page(){
     global $wpdb;
+     // Set number of users per page
+     $users_per_page = 10;
+
+     // Get current page from URL, default to 1 if not present
+     $current_page = isset($_GET['paged']) ? intval($_GET['paged']) : 1;
+     
+     // Calculate the SQL offset
+     $offset = ($current_page - 1) * $users_per_page;
+ 
+     // Get the users for this page
+     $users = get_users([
+         'number' => $users_per_page,
+         'offset' => $offset,
+     ]);
+ 
+     // Get the total number of users
+     $total_users = count(get_users());
+ 
+     // Calculate total pages
+     $total_pages = ceil($total_users / $users_per_page);
     $table_name = $wpdb->prefix . 'blacklisted_ips';
     
     if (isset($_POST['new_ip'])) {
@@ -137,6 +157,14 @@ function blacklist_ips_admin_page(){
         echo '<tr><td>' . $row->ip_address . '</td></tr>';
     }
     echo '</table>';
+// Add pagination links
+for ($page = 1; $page <= $total_pages; $page++) {
+    if ($page == $current_page) {
+        echo '<strong>' . $page . '</strong>';
+    } else {
+        echo '<a href="' . add_query_arg('paged', $page) . '">' . $page . '</a>';
+    }
+}
 }
 
 
