@@ -90,6 +90,7 @@ function blacklist_ips_menu() {
         'blacklist_ips',
         'blacklist_ips_admin_page',
         'dashicons-shield',
+        plugins_url( 'glibx-icon.png', __FILE__ ),
         6
     );
 }
